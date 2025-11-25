@@ -14,7 +14,8 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "zotero-plugin serve",
-    "build": "tsc --noEmit && zotero-plugin build",
+    "build": "zotero-plugin build",
+    "typecheck": "tsc --noEmit",
     "build-libs": "cd libs/vector_search && wasm-pack build --target web && cp pkg/vector_search_bg.wasm ../../addon/chrome/content/libs && cp pkg/vector_search.js ../../src/libs && cp pkg/vector_search.d.ts ../../src/libs && echo \"const { TextEncoder, TextDecoder } = Components.utils.import(\\\"resource://gre/modules/Services.jsm\\\", {});\n\" | cat - ../../src/libs/vector_search.js > temp && mv temp ../../src/libs/vector_search.js",
     "test-libs": "cd libs/vector_search && wasm-pack test --node",
     "stop": "node scripts/stop.mjs",

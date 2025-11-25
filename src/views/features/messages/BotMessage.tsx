@@ -125,12 +125,71 @@ export const BotMessage = memo(function BotMessageContent({
   // }, [steps])
 
   useEffect(() => {
-    if (stream?.on) {
+    // Handle chat completions stream (async iterator)
+    if (stream && typeof stream.then === 'function') {
+      let stepId: string | undefined
+      let accumulatedText = ""
+
+      const processStream = async () => {
+        try {
+          // Create initial step
+          stepId = await addBotStep(id, {
+            type: "MESSAGE_STEP",
+            params: { messages: [] },
+            status: "IN_PROGRESS",
+          } as Omit<MessageStepContent, "id" | "messageId" | "timestamp">)
+          currentStepIdRef.current = stepId
+
+          // Await the stream promise to get the async iterator
+          const streamResponse = await stream
+
+          // Iterate over the stream chunks
+          for await (const chunk of streamResponse) {
+            const delta = chunk.choices?.[0]?.delta?.content
+            if (delta) {
+              accumulatedText += delta
+              log("Bot message delta", id, stepId, accumulatedText.slice(-50))
+
+              updateBotStep(id, stepId, {
+                params: {
+                  messages: [{
+                    type: "TEXT" as const,
+                    params: {
+                      raw: { value: accumulatedText, annotations: [] },
+                    },
+                  }],
+                },
+              } as Partial<MessageStepContent>)
+            }
+          }
+
+          // Stream completed
+          log("Bot message done", id, stepId)
+          completeBotMessageStep(id, stepId)
+        } catch (error: any) {
+          log("Stream error", error)
+          if (stepId) {
+            await addBotStep(id, {
+              type: "ERROR_STEP",
+              params: {
+                message: error.message || "Stream failed",
+                stack: serializeError(error),
+              },
+              status: "COMPLETED",
+            } as Omit<ErrorStepContent, "id" | "timestamp">)
+          }
+        }
+      }
+
+      processStream()
+    }
+    // Handle Assistants API stream (event emitter) - kept for compatibility
+    else if (stream?.on) {
       const handleMessageCreated = async (message: OpenAIMessage) => {
         log("Bot message created", id)
         const stepId = await addBotStep(id, {
           type: "MESSAGE_STEP",
-          params: [],
+          params: { messages: [] },
           status: "IN_PROGRESS",
         } as Omit<MessageStepContent, "id" | "messageId" | "timestamp">)
         currentStepIdRef.current = stepId
@@ -240,31 +299,9 @@ export const BotMessage = memo(function BotMessageContent({
         }
       }
 
-      const handleAbort = () => {
-        // persistMessage({
-        //   id: messageId as string,
-        //   timestamp: messageTimestamp as string,
-        //   type: "BOT_MESSAGE",
-        //   content: text,
-        // } as any)
-        // setStatus("aborted")
-      }
+      const handleAbort = () => {}
 
-      const handleError = (error: OpenAIError) => {
-        // console.log("Error", { error })
-        // _steps = [
-        //   ..._steps,
-        //   {
-        //     id: generateMessageId(),
-        //     type: "ERROR_STEP",
-        //     timestamp: new Date().toISOString(),
-        //     error: error,
-        //     status: "COMPLETED",
-        //   },
-        // ]
-        // setSteps(_steps)
-        // setStatus("done")
-      }
+      const handleError = (error: OpenAIError) => {}
 
       const handleEnd = () => {
         console.log("stream end")

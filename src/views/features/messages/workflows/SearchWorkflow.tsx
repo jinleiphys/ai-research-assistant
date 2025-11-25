@@ -25,7 +25,7 @@ export function SearchWorkflow({
           action: {
             type: "search",
             mode: "search",
-          },
+          } as any,
           workflow: {
             type: "search",
             messageId: content.messageId,

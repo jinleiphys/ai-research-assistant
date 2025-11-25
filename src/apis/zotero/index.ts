@@ -1,6 +1,6 @@
 export { legacySearch as search } from './legacySearch'
 export { createCitations } from './citation'
-export { getItemAndBestAttachment, findItemByTitle, getItemById, ItemInfo } from './item'
+export { getItemAndBestAttachment, findItemByTitle, getItemById } from './item'
 export { suggest, FieldName, suggestItems, suggestCollections } from './suggest'
 export { getCollectionById } from './collection'
 export { createStandaloneNote, createChildNote } from './note'

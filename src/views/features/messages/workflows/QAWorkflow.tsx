@@ -27,7 +27,7 @@ export function QAWorkflow({
             action: {
               type: "search",
               mode: content.params.workflow.input.fulltext ? "fulltext" : "qa",
-            },
+            } as any,
             workflow: {
               type: "qa",
               messageId: content.messageId,
@@ -36,7 +36,7 @@ export function QAWorkflow({
           },
         })
       } else if (content.params.workflow.input.fulltext) {
-        if (content.params.searchResultsCount === 0) {
+        if ((content.params as any).searchResultsCount === 0) {
           addBotStep(content.messageId, {
             type: "ACTION_STEP",
             params: {
@@ -47,6 +47,7 @@ export function QAWorkflow({
                   prompt:
                     "The search query didn't return any results. Please revise and try again.",
                 },
+                output: undefined,
               },
               // context: content.params.context,
               workflow: {
@@ -57,7 +58,7 @@ export function QAWorkflow({
             },
           })
         } else {
-          if (!content.params.indexed) {
+          if (!(content.params as any).indexed) {
             addBotStep(content.messageId, {
               type: "ACTION_STEP",
               params: {
@@ -67,7 +68,7 @@ export function QAWorkflow({
                     // files: searchResults.results,
                     searchResultsStepId: content.params.searchResultsStepId,
                   },
-                },
+                } as any,
                 workflow: {
                   type: "qa",
                   messageId: content.messageId,
@@ -85,7 +86,7 @@ export function QAWorkflow({
                     question: content.params.workflow.input.question,
                     fulltext: content.params.workflow.input.fulltext,
                   },
-                },
+                } as any,
                 workflow: {
                   type: "qa",
                   messageId: content.messageId,

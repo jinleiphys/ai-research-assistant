@@ -3,12 +3,12 @@ import * as Markdown from "../features/messages/actions/Markdown"
 import * as SearchResults from "../features/messages/widgets/SearchResultsWidget"
 import * as QAResponse from "../features/messages/actions/QAAction"
 import * as Error from "../features/messages/actions/ErrorAction"
-import { Message } from "../../typings/legacyMessages"
+import { MessageContent } from "../../typings/messages"
 import { config } from "../../../package.json"
 import { createCollection } from "../../apis/zotero/collection"
 import { ARIA_LIBRARY } from "../../utils/constants"
 
-export async function chatHistoryToNote(messages: Message[]) {
+export async function chatHistoryToNote(messages: MessageContent[]) {
   // const chatHistoryHtml = (
   //   await Promise.all(
   //     await messages.map(async (message) => {

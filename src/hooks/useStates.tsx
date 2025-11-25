@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react"
 import { find } from "lodash"
 import { uniqBy, groupBy } from "lodash"
 import {
+  selectionConfig,
+} from "../models/utils/states"
+import {
   SelectedCreator,
   SelectedTag,
   SelectedItem,
@@ -10,9 +13,8 @@ import {
   StateName,
   StateSelection,
   StateSelections,
-  selectionConfig,
-} from "../models/utils/states"
-import { MentionValue } from "../typings/input"
+  MentionValue,
+} from "../typings/input"
 import * as zot from "../apis/zotero"
 import { title } from "process"
 

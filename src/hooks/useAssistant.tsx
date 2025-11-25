@@ -21,12 +21,9 @@ export const AssistantContextProvider: React.FC<AssistantProviderProps> = ({
   const assistant = useMemo(
     () =>
       new ResearchAssistant({
-        assistants: {
-          routing: getPref("ASSISTANT_ROUTING") as string,
-          file: getPref("ASSISTANT_FILE") as string,
-        },
         models: {
-          default: "qwen3-max",
+          default: (getPref("OPENAI_MODEL") as string) || "qwen-max",
+          vision: (getPref("VISION_MODEL") as string) || "qwen-vl-max",
         },
         messageStore: addon.data.popup.messageStore,
       }),

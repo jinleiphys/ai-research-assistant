@@ -56,9 +56,33 @@ export function log(...messages: any) {
   }
 }
 
+function getOrCreateConversation(): ConversationInfo {
+  const stored = getPref("CURRENT_CONVERSATION") as string | undefined
+  if (stored) {
+    try {
+      return JSON.parse(stored) as ConversationInfo
+    } catch (e) {
+      log("Failed to parse stored conversation, creating new one", e)
+    }
+  }
+  // Create a default conversation
+  const defaultConversation: ConversationInfo = {
+    id: "conv_" + Zotero.Utilities.randomString(24),
+    title: "New Conversation",
+    description: "",
+    metadata: {
+      vendor: "openai",
+      threadId: "",
+      vectorStoreId: "",
+    },
+  }
+  setPref("CURRENT_CONVERSATION", JSON.stringify(defaultConversation))
+  return defaultConversation
+}
+
 export function Container() {
   const [currentConversation, setCurrentConversation] = useState(
-    JSON.parse(getPref("CURRENT_CONVERSATION") as string) as ConversationInfo,
+    getOrCreateConversation,
   )
   const zoom = useZoom()
   const { notification, hasNotification } = useNotification()
@@ -192,7 +216,9 @@ export function Container() {
   // }, [userInput])
 
   useEffect(() => {
-    if (input) {
+    async function sendMessage() {
+      if (!input) return
+
       const { userInput, id } = input
       if (id) {
         // const updatedUserMessage = {
@@ -204,6 +230,16 @@ export function Container() {
       } else {
         addUserMessage(userInput)
       }
+
+      // Ensure thread exists before sending message
+      try {
+        await assistant.ensureThread()
+      } catch (error) {
+        log("Failed to create thread", error)
+        // TODO: Show error to user
+        return
+      }
+
       const stream = assistant.streamMessage(
         userInput.content.newValue,
         simplifyStates(userInput.states),
@@ -213,6 +249,7 @@ export function Container() {
         steps: [],
       })
     }
+    sendMessage()
   }, [addUserMessage, addBotMessage, assistant, input])
 
   const handleSubmit = useCallback(
@@ -399,8 +436,8 @@ export function Container() {
 
   return (
     <div
-      className="fixed m-0 h-full px-3 bg-gradient-170 from-red-50 to-blue-50 flex flex-col"
-      style={zoom.style}
+      className="absolute inset-0 m-0 px-3 bg-gradient-to-br from-red-50 to-blue-50 flex flex-col"
+      style={{ ...zoom.style, minHeight: "100vh" }}
       onDragEnter={() => setIsDragging(isDragging + 1)}
       onDragLeave={() => setIsDragging(isDragging - 1)}
     >

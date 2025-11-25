@@ -9,13 +9,15 @@ import { Input, InputProps } from "../input/Input"
 import { useDragging } from "../../../hooks/useDragging"
 import { SelectionIcon } from "../../icons/zotero"
 import {
-  StateName,
-  States,
-  StateSelections,
   stateNames,
   selectionConfig,
   areStatesEmpty,
 } from "../../../models/utils/states"
+import {
+  StateName,
+  States,
+  StateSelections,
+} from "../../../typings/input"
 import { TextField } from "../input/TextField"
 import { UserMessageContent } from "../../../typings/messages"
 import { message as log } from "../../../utils/loggers"

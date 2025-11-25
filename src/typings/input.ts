@@ -1,5 +1,3 @@
-import { States } from "../models/utils/states"
-import { MentionValue } from './input'
 import { ItemInfo, AttachmentInfo } from './zotero'
 
 export type StateName = 'items' | 'collections' | 'creators' | 'tags' | 'images'

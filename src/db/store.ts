@@ -147,17 +147,34 @@ export function messagesReducer(
       const { messageId, stepId } = action.payload
       const currentMessage = state.messages.find(({ id }) => id === messageId) as BotMessageContent
       const currentStep = currentMessage!.steps.find(({ id }) => id === stepId) as MessageStepContent
+
+      // Handle messages - support both JSON format (Assistants API) and plain text (Chat Completions API)
       const parsedMessages = currentStep.params.messages.map((message) => {
         switch (message.type) {
           case "TEXT": {
-            const parsed = parsePartialJson(message.params.raw!.value)
-            return {
-              ...message,
-              params: {
-                message: parsed.message,
-                context: parsed.context || {},
-                workflows: parsed.workflows || [],
-              },
+            const rawValue = message.params.raw?.value || ""
+            // Try to parse as JSON first (for Assistants API compatibility)
+            const parsed = parsePartialJson(rawValue)
+            if (parsed && typeof parsed === "object" && "message" in parsed) {
+              // JSON format from Assistants API
+              return {
+                ...message,
+                params: {
+                  message: parsed.message,
+                  context: parsed.context || {},
+                  workflows: parsed.workflows || [],
+                },
+              }
+            } else {
+              // Plain text from Chat Completions API - just use the raw value as the message
+              return {
+                ...message,
+                params: {
+                  message: rawValue,
+                  context: {},
+                  workflows: [],
+                },
+              }
             }
           }
           default: {
@@ -165,23 +182,26 @@ export function messagesReducer(
           }
         }
       })
-      const workflowSteps = parsedMessages.filter((message) => message.type === "TEXT" && message.params.workflows.length > 0).map((message) => {
-        const { params } = message as TextMessageContent
-        return params.workflows!.map((workflow) => {
-          return {
-            id: generateStepId(),
-            messageId,
-            timestamp: generateTimestamp(),
-            type: "WORKFLOW_STEP",
-            status: "IN_PROGRESS",
-            // status: "COMPLETED", // For now, we set the workflow to completed for development
-            params: {
-              workflow,
-              context: params.context,
+
+      // Only create workflow steps if there are workflows
+      const workflowSteps = parsedMessages
+        .filter((message) => message.type === "TEXT" && message.params.workflows && message.params.workflows.length > 0)
+        .map((message) => {
+          const { params } = message as TextMessageContent
+          return params.workflows!.map((workflow) => {
+            return {
+              id: generateStepId(),
+              messageId,
+              timestamp: generateTimestamp(),
+              type: "WORKFLOW_STEP",
+              status: "IN_PROGRESS",
+              params: {
+                workflow,
+                context: params.context,
+              }
             }
-          }
-        })
-      }).flat() as WorkflowStepContent[]
+          })
+        }).flat() as WorkflowStepContent[]
 
       return {
         ...state,
@@ -224,22 +244,24 @@ export function messagesReducer(
                   step.id === action.payload.stepId
                   ? {
                     ...step,
-                    params: step.params.messages.map((message) => {
-                      if (message.type !== "TEXT") {
-                        return message
-                      }
-                      return {
-                        ...message,
-                        params: {
-                          ...message.params,
-                          actions: message.params.actions!.map((act) =>
-                            act.id === action.payload.actionId
-                              ? { ...act, ...action.payload.updates }
-                              : act,
-                          ),
-                        },
-                      } as TextMessageContent
-                    }),
+                    params: {
+                      messages: step.params.messages.map((message) => {
+                        if (message.type !== "TEXT") {
+                          return message
+                        }
+                        return {
+                          ...message,
+                          params: {
+                            ...message.params,
+                            actions: message.params.actions!.map((act) =>
+                              (act as any).id === action.payload.actionId
+                                ? { ...act, ...action.payload.updates }
+                                : act,
+                            ),
+                          },
+                        } as TextMessageContent
+                      }),
+                    },
                   }
                   : step,
               ),
