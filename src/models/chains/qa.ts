@@ -206,9 +206,9 @@ interface loadQAChainInput {
 
 export const loadQAChain = (params: loadQAChainInput) => {
   const OPENAI_API_KEY = (Zotero.Prefs.get(`${config.addonRef}.OPENAI_API_KEY`) as string) || 'YOUR_OPENAI_API_KEY'
-  const OPENAI_MODEL = (Zotero.Prefs.get(`${config.addonRef}.OPENAI_MODEL`) as string) || 'gpt-4o'
+  const OPENAI_MODEL = (Zotero.Prefs.get(`${config.addonRef}.OPENAI_MODEL`) as string) || 'qwen3-max'
   const OPENAI_BASE_URL =
-    (Zotero.Prefs.get(`${config.addonRef}.OPENAI_BASE_URL`) as string) || 'https://api.openai.com/v1'
+    (Zotero.Prefs.get(`${config.addonRef}.OPENAI_BASE_URL`) as string) || 'https://dashscope.aliyuncs.com/compatible-mode/v1'
   const llm = new ChatOpenAI({
     temperature: 0,
     openAIApiKey: OPENAI_API_KEY,
@@ -287,9 +287,9 @@ class RetrievalQAChain extends BaseChain {
 
 export const loadRetrievalQAChain = (params: loadQAChainInput) => {
   const OPENAI_API_KEY = (Zotero.Prefs.get(`${config.addonRef}.OPENAI_API_KEY`) as string) || 'YOUR_OPENAI_API_KEY'
-  const OPENAI_MODEL = (Zotero.Prefs.get(`${config.addonRef}.OPENAI_MODEL`) as string) || 'gpt-4o'
+  const OPENAI_MODEL = (Zotero.Prefs.get(`${config.addonRef}.OPENAI_MODEL`) as string) || 'qwen3-max'
   const OPENAI_BASE_URL =
-    (Zotero.Prefs.get(`${config.addonRef}.OPENAI_BASE_URL`) as string) || 'https://api.openai.com/v1'
+    (Zotero.Prefs.get(`${config.addonRef}.OPENAI_BASE_URL`) as string) || 'https://dashscope.aliyuncs.com/compatible-mode/v1'
   const llm = new ChatOpenAI({
     temperature: 0,
     openAIApiKey: OPENAI_API_KEY,

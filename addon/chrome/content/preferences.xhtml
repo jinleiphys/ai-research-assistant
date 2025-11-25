@@ -11,32 +11,62 @@
     ></label>
     <hbox>
       <label data-l10n-id="pref-openai-model"></label>
-      <radiogroup
-        id="zotero-prefpane-__addonRef__-OPENAI_MODEL"
-        preference="extensions.zotero.__addonRef__.OPENAI_MODEL"
-        native="true"
-      >
-        <radio
-          label="GPT-4"
-          value="gpt-4"
-          id="zotero-prefpane-__addonRef__-OPENAI_MODEL-0"
-        />
-        <radio
-          label="GPT-4 Turbo"
-          value="gpt-4-turbo"
-          id="zotero-prefpane-__addonRef__-OPENAI_MODEL-1"
-        />
-        <radio
-          label="GPT-4o"
-          value="gpt-4o"
-          id="zotero-prefpane-__addonRef__-OPENAI_MODEL-2"
-        />
-        <radio
-          label="GPT-4o mini"
-          value="gpt-4o-mini"
-          id="zotero-prefpane-__addonRef__-OPENAI_MODEL-3"
-        />
-      </radiogroup>
+      <vbox>
+        <label data-l10n-id="pref-model-text" style="font-weight: bold; margin-bottom: 4px;"></label>
+        <radiogroup
+          id="zotero-prefpane-__addonRef__-OPENAI_MODEL"
+          preference="extensions.zotero.__addonRef__.OPENAI_MODEL"
+          native="true"
+        >
+          <radio
+            label="Qwen3-Max (推荐)"
+            value="qwen3-max"
+            id="zotero-prefpane-__addonRef__-OPENAI_MODEL-0"
+          />
+          <radio
+            label="Qwen-Max"
+            value="qwen-max"
+            id="zotero-prefpane-__addonRef__-OPENAI_MODEL-1"
+          />
+          <radio
+            label="Qwen-Plus"
+            value="qwen-plus"
+            id="zotero-prefpane-__addonRef__-OPENAI_MODEL-2"
+          />
+          <radio
+            label="Qwen-Turbo"
+            value="qwen-turbo"
+            id="zotero-prefpane-__addonRef__-OPENAI_MODEL-3"
+          />
+        </radiogroup>
+        <label data-l10n-id="pref-model-vision" style="font-weight: bold; margin-top: 8px; margin-bottom: 4px;"></label>
+        <radiogroup
+          id="zotero-prefpane-__addonRef__-VISION_MODEL"
+          preference="extensions.zotero.__addonRef__.VISION_MODEL"
+          native="true"
+        >
+          <radio
+            label="Qwen3-VL-Max (视觉理解)"
+            value="qwen3-vl-max"
+            id="zotero-prefpane-__addonRef__-VISION_MODEL-0"
+          />
+          <radio
+            label="Qwen3-VL-Plus (混合思考)"
+            value="qwen3-vl-plus"
+            id="zotero-prefpane-__addonRef__-VISION_MODEL-1"
+          />
+          <radio
+            label="Qwen3-VL-Flash (快速)"
+            value="qwen3-vl-flash"
+            id="zotero-prefpane-__addonRef__-VISION_MODEL-2"
+          />
+          <radio
+            label="Qwen-Omni-Turbo (全模态)"
+            value="qwen-omni-turbo"
+            id="zotero-prefpane-__addonRef__-VISION_MODEL-3"
+          />
+        </radiogroup>
+      </vbox>
     </hbox>
     <hbox>
       <label

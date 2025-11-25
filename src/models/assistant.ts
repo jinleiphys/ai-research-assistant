@@ -54,6 +54,7 @@ export class ResearchAssistant {
     this.models = models
     this.openai = new OpenAI({
       apiKey: getPref("OPENAI_API_KEY") as string,
+      baseURL: (getPref("OPENAI_BASE_URL") as string) || "https://dashscope.aliyuncs.com/compatible-mode/v1",
     })
   }
 

@@ -1,9 +1,11 @@
 pref-enable =
     .label = Enable
 pref-model-configuration = Model Configuration
-pref-openai-model = OpenAI Model
-pref-openai-api-key = OpenAI API Key
-pref-openai-base-url = OpenAI API Base URL
+pref-openai-model = LLM Model
+pref-model-text = Text Model
+pref-model-vision = Vision Model
+pref-openai-api-key = API Key (DashScope)
+pref-openai-base-url = API Base URL
 pref-ui-customization = UI Customization
 pref-default-zoom-level = Default Zoom Level
 pref-keyboard-shortcut = Keyboard Shortcut

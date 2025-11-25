@@ -66,7 +66,7 @@ export interface ErrorActionProps {
 export function ErrorAction({ content: { error }, control }: ErrorActionProps) {
   const { scrollToEnd } = control
   const OPENAI_MODEL =
-    (Zotero.Prefs.get(`${config.addonRef}.OPENAI_MODEL`) as string) || "gpt-4o"
+    (Zotero.Prefs.get(`${config.addonRef}.OPENAI_MODEL`) as string) || "qwen3-max"
 
   useEffect(() => {
     scrollToEnd()
